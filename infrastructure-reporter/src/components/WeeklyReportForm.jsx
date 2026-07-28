@@ -166,7 +166,7 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="form-section">
-        <h2>📅 Report Date</h2>
+        <h2>Report date</h2>
         <div className="form-group">
           <input
             type="text"
@@ -180,28 +180,21 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
       </div>
 
       <div className="form-section">
-        <h2>🖥️ Systems Covered</h2>
+        <h2>Systems covered</h2>
         <div className="form-group">
-          <input
-            type="text"
-            value={formData.systems.join(", ")}
-            disabled
-            style={{ background: "#f8fafc", cursor: "not-allowed" }}
-          />
-          <small style={{ color: "#6b7280", fontSize: "12px" }}>
+          <input type="text" value={formData.systems.join(", ")} disabled />
+          <small className="form-hint">
             Currently: {formData.systems.join(", ")}
           </small>
         </div>
       </div>
 
       <div className="form-section">
-        <h2>🆕 New Environments Created</h2>
+        <h2>New environments created</h2>
         {formData.newEnvironments.map((item, index) => (
           <div
             key={index}
-            className="service-entry"
-            style={{ gridTemplateColumns: "1fr 0.5fr" }}
-          >
+            className="service-entry service-entry-simple">
             <input
               type="text"
               value={item}
@@ -215,7 +208,7 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
               className="btn btn-danger btn-sm"
               onClick={() => removeArrayItem("newEnvironments", index)}
             >
-              ✕
+              Remove
             </button>
           </div>
         ))}
@@ -229,13 +222,11 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
       </div>
 
       <div className="form-section">
-        <h2>⬆️ Upgrades / Additional Services</h2>
+        <h2>Upgrades / additional services</h2>
         {formData.upgrades.map((item, index) => (
           <div
             key={index}
-            className="service-entry"
-            style={{ gridTemplateColumns: "1fr 0.5fr" }}
-          >
+            className="service-entry service-entry-simple">
             <input
               type="text"
               value={item}
@@ -249,7 +240,7 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
               className="btn btn-danger btn-sm"
               onClick={() => removeArrayItem("upgrades", index)}
             >
-              ✕
+              Remove
             </button>
           </div>
         ))}
@@ -263,13 +254,9 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
       </div>
 
       <div className="form-section">
-        <h2>💰 Cost Breakdown</h2>
+        <h2>Cost breakdown</h2>
         {errors.services && (
-          <div
-            style={{ color: "#ef4444", marginBottom: "12px", fontSize: "14px" }}
-          >
-            ⚠️ {errors.services}
-          </div>
+          <div className="form-error">{errors.services}</div>
         )}
 
         {formData.services.map((service, index) => (
@@ -350,9 +337,8 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
               type="button"
               className="btn btn-danger btn-sm"
               onClick={() => removeService(service.id)}
-              style={{ marginBottom: "4px" }}
             >
-              ✕
+              Remove
             </button>
           </div>
         ))}
@@ -366,13 +352,11 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
       </div>
 
       <div className="form-section">
-        <h2>📝 Additional Notes</h2>
+        <h2>Additional notes</h2>
         {formData.notes.map((note, index) => (
           <div
             key={index}
-            className="service-entry"
-            style={{ gridTemplateColumns: "1fr 0.5fr" }}
-          >
+            className="service-entry service-entry-simple">
             <input
               type="text"
               value={note}
@@ -386,7 +370,7 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
               className="btn btn-danger btn-sm"
               onClick={() => removeArrayItem("notes", index)}
             >
-              ✕
+              Remove
             </button>
           </div>
         ))}
@@ -401,7 +385,7 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
 
       <div className="form-actions">
         <button type="submit" className="btn btn-primary">
-          📊 Generate Report
+          Generate report
         </button>
       </div>
     </form>

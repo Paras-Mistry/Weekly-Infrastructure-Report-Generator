@@ -58,15 +58,15 @@ const ReportPreview = ({ report }) => {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(generateReport());
-    alert("✅ Report copied to clipboard!");
+    alert("Report copied to clipboard.");
   };
 
   return (
     <div className="report-preview">
-      <h3>📄 Report Preview</h3>
+      <h3>Report preview</h3>
       <div className="report-content">{generateReport()}</div>
       <button className="btn btn-secondary copy-btn" onClick={handleCopy}>
-        📋 Copy Report
+        Copy report
       </button>
     </div>
   );

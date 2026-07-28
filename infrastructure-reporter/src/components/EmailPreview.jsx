@@ -78,15 +78,15 @@ const EmailPreview = ({ report }) => {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(generateEmail());
-    alert("✅ Email copied to clipboard! Ready to paste into Outlook.");
+    alert("Email copied to clipboard. Ready to paste into Outlook.");
   };
 
   return (
     <div className="email-preview">
-      <h3>📧 Outlook Email Preview</h3>
+      <h3>Outlook email preview</h3>
       <div className="email-content">{generateEmail()}</div>
       <button className="btn btn-primary copy-btn" onClick={handleCopy}>
-        📋 Copy Email
+        Copy email
       </button>
     </div>
   );

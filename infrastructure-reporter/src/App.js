@@ -33,26 +33,29 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>📊 Weekly Infrastructure Reporter</h1>
+        <h1>
+          <span className="eyebrow">Infrastructure</span>
+          Weekly Report
+        </h1>
         <div className="header-nav">
           <button
             className={activeTab === "form" ? "active" : ""}
             onClick={() => setActiveTab("form")}
           >
-            ✏️ New Report
+            New report
           </button>
           <button
             className={activeTab === "preview" ? "active" : ""}
             onClick={() => setActiveTab("preview")}
             disabled={!currentReport}
           >
-            📄 Preview
+            Preview
           </button>
           <button
             className={activeTab === "history" ? "active" : ""}
             onClick={() => setActiveTab("history")}
           >
-            📚 History
+            History
           </button>
         </div>
       </header>
