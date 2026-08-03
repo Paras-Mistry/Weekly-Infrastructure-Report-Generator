@@ -30,6 +30,12 @@ function App() {
     }
   }, []);
 
+  // Prior reports only — excludes currentReport itself so
+  // generateServiceHistory (which appends currentReport) doesn't double it up.
+  const priorReports = currentReport
+    ? reports.filter((r) => r.id !== currentReport.id)
+    : reports;
+
   return (
     <div className="app">
       <header className="app-header">
@@ -67,15 +73,18 @@ function App() {
 
         {activeTab === "preview" && currentReport && (
           <div className="preview-container">
-            <ReportPreview report={currentReport} />
-            <EmailPreview report={currentReport} />
+            <ReportPreview report={currentReport} allReports={priorReports} />
+            <EmailPreview report={currentReport} allReports={priorReports} />
           </div>
         )}
 
         {activeTab === "history" && (
           <ReportHistory
             reports={reports}
-            onSelectReport={setCurrentReport}
+            onSelectReport={(report) => {
+              setCurrentReport(report);
+              setActiveTab("preview");
+            }}
             onDeleteReport={deleteReport}
           />
         )}

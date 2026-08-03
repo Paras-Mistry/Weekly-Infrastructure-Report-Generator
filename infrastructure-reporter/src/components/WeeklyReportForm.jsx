@@ -12,6 +12,7 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
     newEnvironments: ["None"],
     upgrades: ["None"],
     notes: [""],
+    headlines: [""],
     services: [
       {
         id: uuidv4(),
@@ -144,6 +145,7 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
       newEnvironments: formData.newEnvironments.filter((e) => e.trim()),
       upgrades: formData.upgrades.filter((u) => u.trim()),
       notes: formData.notes.filter((n) => n.trim()),
+      headlines: formData.headlines.filter((h) => h.trim()),
       services: formData.services.map((s) => ({
         ...s,
         currentCost: parseFloat(s.currentCost) || 0,
@@ -190,11 +192,43 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
       </div>
 
       <div className="form-section">
+        <h2>Headlines</h2>
+        <small className="form-hint">
+          Leave blank to auto-generate from the biggest cost movers below, or
+          write your own to override.
+        </small>
+        {formData.headlines.map((item, index) => (
+          <div key={index} className="service-entry service-entry-simple">
+            <input
+              type="text"
+              value={item}
+              onChange={(e) =>
+                handleArrayChange("headlines", index, e.target.value)
+              }
+              placeholder="e.g., AWS No Tag Explosion: untagged baseline cost skyrocketed by +$161.85 (+159%)"
+            />
+            <button
+              type="button"
+              className="btn btn-danger btn-sm"
+              onClick={() => removeArrayItem("headlines", index)}
+            >
+              Remove
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          className="btn btn-secondary btn-sm btn-add"
+          onClick={() => addArrayItem("headlines")}
+        >
+          + Add Headline
+        </button>
+      </div>
+
+      <div className="form-section">
         <h2>New environments created</h2>
         {formData.newEnvironments.map((item, index) => (
-          <div
-            key={index}
-            className="service-entry service-entry-simple">
+          <div key={index} className="service-entry service-entry-simple">
             <input
               type="text"
               value={item}
@@ -224,9 +258,7 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
       <div className="form-section">
         <h2>Upgrades / additional services</h2>
         {formData.upgrades.map((item, index) => (
-          <div
-            key={index}
-            className="service-entry service-entry-simple">
+          <div key={index} className="service-entry service-entry-simple">
             <input
               type="text"
               value={item}
@@ -255,9 +287,7 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
 
       <div className="form-section">
         <h2>Cost breakdown</h2>
-        {errors.services && (
-          <div className="form-error">{errors.services}</div>
-        )}
+        {errors.services && <div className="form-error">{errors.services}</div>}
 
         {formData.services.map((service, index) => (
           <div key={service.id} className="service-entry">
@@ -354,9 +384,7 @@ const WeeklyReportForm = ({ onReportGenerated }) => {
       <div className="form-section">
         <h2>Additional notes</h2>
         {formData.notes.map((note, index) => (
-          <div
-            key={index}
-            className="service-entry service-entry-simple">
+          <div key={index} className="service-entry service-entry-simple">
             <input
               type="text"
               value={note}
