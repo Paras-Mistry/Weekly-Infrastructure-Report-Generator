@@ -49,6 +49,31 @@ export function groupBySystem(services) {
   }, {});
 }
 
+// Renders a plain-text table with box-drawing borders, e.g.:
+// +---------+---------+
+// | Header  | Header2 |
+// +---------+---------+
+// | value   | value2  |
+// +---------+---------+
+// Note: status-emoji columns can drift slightly out of alignment in
+// proportional (non-monospace) fonts like Outlook's default — this renders
+// correctly in any monospace viewer (plain text, Notepad, code editors).
+export function renderBorderedTable(headers, rows) {
+  const colWidths = headers.map((h, i) =>
+    Math.max(h.length, ...rows.map((r) => String(r[i]).length)),
+  );
+  const border = "+" + colWidths.map((w) => "-".repeat(w + 2)).join("+") + "+";
+  const renderRow = (cells) =>
+    "| " +
+    cells.map((c, i) => String(c).padEnd(colWidths[i])).join(" | ") +
+    " |";
+
+  const lines = [border, renderRow(headers), border];
+  rows.forEach((r) => lines.push(renderRow(r)));
+  lines.push(border);
+  return lines;
+}
+
 // ---- Headlines -----------------------------------------------------------
 
 // Picks the biggest dollar movers (excluding "flat") as headline bullets.
@@ -185,13 +210,29 @@ export function generateReportBody(report, allReports = []) {
 
   lines.push("DETAILED SERVICE BREAKDOWN");
   lines.push("");
+
+  const rows = [];
   Object.entries(grouped).forEach(([system, services]) => {
     services.forEach((s) => {
-      lines.push(`${system} - ${s.name}: ${s.severity.toUpperCase()}`);
-      lines.push(
-        `${formatMoney(s.lastWeekCost, s.currency)} → ${formatMoney(s.currentCost, s.currency)} (${s.diff >= 0 ? "+" : "-"}${s.currency}${Math.abs(s.diff).toFixed(2)}, ${s.pct >= 0 ? "+" : ""}${s.pct.toFixed(0)}%) ${statusEmoji(s.pct)}`,
-      );
+      const changeLabel = `${s.diff >= 0 ? "+" : "-"}${s.currency}${Math.abs(s.diff).toFixed(2)} (${s.pct >= 0 ? "+" : ""}${s.pct.toFixed(0)}%)`;
+      rows.push([
+        `${system} - ${s.name}`,
+        formatMoney(s.lastWeekCost, s.currency),
+        formatMoney(s.currentCost, s.currency),
+        changeLabel,
+        s.severity.toUpperCase(),
+      ]);
+    });
+  });
 
+  const headers = ["Service", "Last Week", "Current", "Change", "Status"];
+  lines.push(...renderBorderedTable(headers, rows));
+  lines.push("(🟢 positive/flat  🟡 moderate  🟠 high  🔴 critical)");
+  lines.push("");
+
+  // Trend history for volatile services goes underneath the table.
+  Object.entries(grouped).forEach(([system, services]) => {
+    services.forEach((s) => {
       if (
         (s.severity === "critical" || s.severity === "high") &&
         allReports.length > 0
@@ -203,7 +244,7 @@ export function generateReportBody(report, allReports = []) {
           report,
         );
         if (history.length > 1) {
-          lines.push(`${s.name} History:`);
+          lines.push(`${system} - ${s.name} History:`);
           history.forEach((h, i) => {
             const prev = history[i - 1];
             const pct =
@@ -215,6 +256,7 @@ export function generateReportBody(report, allReports = []) {
               `* Week ${h.week} (${h.date}): ${formatMoney(h.cost, h.currency)} ${marker}`,
             );
           });
+          lines.push("");
         }
       }
     });
